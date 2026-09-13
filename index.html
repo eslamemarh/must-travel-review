@@ -296,7 +296,7 @@ function draw(){
   ctx.fillRect(0,0,W,H);
 
   // watermark palm (background texture, drawn as vectors so it renders the same on every device)
-  palmSilhouette(ctx, W-150, 30, 300, '#000000', 0.10);
+  palmSilhouette(ctx, 950, 270, 150, '#000000', 0.15);
 
   // ---- top logo (real client logo, small backdrop for contrast) ----
   const logoBoxH = 92, logoBoxW = 210, logoBoxX = 60, logoBoxY = 40;
@@ -413,7 +413,11 @@ function draw(){
 }
 
 // ---- font + logo loading then first draw ----
-document.fonts.load('700 96px "Aref Ruqaa"').then(()=>document.fonts.load('800 46px Tajawal')).then(draw).catch(draw);
+if (document.fonts && document.fonts.load) {
+  document.fonts.load('700 96px "Aref Ruqaa"').then(()=>document.fonts.load('800 46px Tajawal')).then(draw).catch(draw);
+} else {
+  draw();
+}
 setTimeout(draw, 400); // fallback in case font promise stalls
 
 // ---- upload handling ----
