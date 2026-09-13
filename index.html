@@ -238,6 +238,36 @@ function star(c, cx, cy, spikes, outerR, innerR){
   c.closePath();
 }
 
+function palmSilhouette(c, cx, topY, size, color, alpha){
+  c.save();
+  c.globalAlpha = alpha;
+  c.strokeStyle = color;
+  c.fillStyle = color;
+  c.lineWidth = size*0.05;
+  c.lineCap = 'round';
+  // trunk
+  c.beginPath();
+  c.moveTo(cx, topY + size*1.3);
+  c.quadraticCurveTo(cx + size*0.12, topY + size*0.6, cx, topY);
+  c.stroke();
+  // fronds
+  const frondAngles = [-70,-38,-12,14,42,72];
+  frondAngles.forEach(deg=>{
+    const rad = deg * Math.PI/180;
+    const len = size*0.8;
+    const tipX = cx + Math.sin(rad)*len;
+    const tipY = topY - Math.cos(rad)*len*0.55 - size*0.08;
+    const midX = cx + Math.sin(rad)*len*0.5;
+    const midY = topY - len*0.32;
+    c.beginPath();
+    c.moveTo(cx, topY);
+    c.quadraticCurveTo(midX, midY, tipX, tipY);
+    c.quadraticCurveTo(midX*0.9 + cx*0.1, midY + size*0.05, cx, topY);
+    c.fill();
+  });
+  c.restore();
+}
+
 function clampOffsets(){
   const drawW = img.width * imgScale, drawH = img.height * imgScale;
   const maxOffX = Math.max(0, (drawW - frame.w)/2);
@@ -265,13 +295,8 @@ function draw(){
   ctx.fillStyle = vg;
   ctx.fillRect(0,0,W,H);
 
-  // watermark palm (background texture)
-  ctx.save();
-  ctx.globalAlpha = 0.10;
-  ctx.font = '520px serif';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('🌴', W-430, 260);
-  ctx.restore();
+  // watermark palm (background texture, drawn as vectors so it renders the same on every device)
+  palmSilhouette(ctx, W-150, 30, 300, '#000000', 0.10);
 
   // ---- top logo (real client logo, small backdrop for contrast) ----
   const logoBoxH = 92, logoBoxW = 210, logoBoxX = 60, logoBoxY = 40;
