@@ -429,9 +429,10 @@ document.getElementById('upload').addEventListener('change', (e)=>{
     const image = new Image();
     image.onload = ()=>{
       img = image;
+      // fit by width only, so text lines are never cropped left/right —
+      // any extra height just gets cropped/panned vertically instead
       const scaleW = frame.w / img.width;
-      const scaleH = frame.h / img.height;
-      minScale = Math.max(scaleW, scaleH);
+      minScale = scaleW;
       imgScale = minScale;
       offX = 0; offY = 0;
       draw();
@@ -489,8 +490,7 @@ function onFrameResize(){
   recalcCanvasHeight();
   if(img){
     const scaleW = frame.w / img.width;
-    const scaleH = frame.h / img.height;
-    minScale = Math.max(scaleW, scaleH);
+    minScale = scaleW;
     if(imgScale < minScale) imgScale = minScale;
     clampOffsets();
   }
